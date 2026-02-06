@@ -1,0 +1,3332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEBRATU | Website Developer, Logo Designer & Video Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Combined and Enhanced CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #081b29;
+            --secondary-color: #00abf0;
+            --accent-color: #0ef;
+            --dark-color: #051129;
+            --light-color: #ededed;
+            --gray-color: #555557;
+            --success-color: #00ff85;
+            --ai-color: #a855f7;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --box-shadow: 0 10px 30px rgba(0, 238, 255, 0.2);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            color: var(--light-color);
+            background: var(--primary-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--accent-color);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease;
+            mix-blend-mode: difference;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-btn.active {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            position: fixed;
+            top: 100px;
+            left: 30px;
+            background: var(--success-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 255, 133, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        /* Header & Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 10%;
+            background: rgba(5, 17, 41, 0.85);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            animation: slideRight 1s ease forwards;
+        }
+
+        .logo img {
+            max-height: 50px;
+            width: auto;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        .logo .ai-badge {
+            font-size: 12px;
+            background: var(--ai-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .navbar a {
+            display: inline-block;
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 40px;
+            transition: var(--transition);
+            opacity: 0;
+            animation: slideTop 0.5s ease forwards;
+            animation-delay: calc(0.2s * var(--i));
+            position: relative;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .navbar a:hover::after,
+        .navbar a.active::after {
+            width: 100%;
+        }
+
+        .navbar a:hover,
+        .navbar a.active {
+            color: var(--accent-color);
+        }
+
+        .lang-selector {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .lang-selector i {
+            color: var(--accent-color);
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .lang-selector select {
+            background: transparent;
+            color: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lang-selector select option {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] {
+            text-align: right;
+        }
+
+        [dir="rtl"] .navbar a {
+            margin-left: 0;
+            margin-right: 40px;
+        }
+
+        [dir="rtl"] .logo {
+            animation-name: slideLeft;
+        }
+
+        [dir="rtl"] .home-content {
+            animation-name: slideLeft;
+        }
+
+        [dir="rtl"] .timeline {
+            padding-left: 0;
+            padding-right: 50px;
+        }
+
+        [dir="rtl"] .timeline::before {
+            left: auto;
+            right: 20px;
+        }
+
+        [dir="rtl"] .timeline-date {
+            left: auto;
+            right: -50px;
+        }
+
+        [dir="rtl"] .form-group i {
+            left: auto;
+            right: 15px;
+        }
+
+        [dir="rtl"] .form-group input,
+        [dir="rtl"] .form-group textarea {
+            padding: 15px 45px 15px 15px;
+        }
+
+        /* Hero Section - Enhanced */
+        .home {
+            position: relative;
+            width: 100%;
+            height: 120vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(8, 27, 41, 0.95), rgba(0, 171, 240, 0.1));
+        }
+
+        .home-bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 20s infinite linear;
+        }
+
+        .home-content {
+            max-width: 700px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .home-content .hello {
+            font-size: 24px;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: slideBottom 1s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .home-content h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+            opacity: 0;
+            animation: slideRight 1s ease forwards;
+            animation-delay: 0.7s;
+            line-height: 1.1;
+        }
+
+        .dynamic-text {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--light-color);
+            height: 70px;
+            line-height: 70px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dynamic-text li {
+            list-style: none;
+            position: relative;
+            top: 0;
+            animation: slide 8s steps(2) infinite;
+        }
+
+        .dynamic-text li span {
+            position: relative;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(14, 255, 255, 0.3), 0 0 20px rgba(14, 255, 255, 0.2);
+        }
+
+        .dynamic-text li span::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            animation: typing 4s steps(15) infinite;
+            box-shadow: -5px 0 15px rgba(14, 255, 255, 0.4);
+        }
+
+        .home-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: slideLeft 1s ease forwards;
+            animation-delay: 1s;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            opacity: 0;
+            animation: slideTop 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 238, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 80px 10%;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--light-color);
+            opacity: 0.8;
+        }
+
+        /* Projects Section */
+        .projects {
+            padding: 100px 10%;
+            background: var(--dark-color);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .section-title span {
+            color: var(--accent-color);
+        }
+
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(0, 238, 255, 0.2);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .project-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-img img {
+            transform: scale(1.1);
+        }
+
+        .project-content {
+            padding: 25px;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .project-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            padding: 5px 15px;
+            background: rgba(0, 238, 255, 0.1);
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .project-link {
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-link.live {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .project-link.code {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .project-link:hover {
+            transform: translateY(-3px);
+        }
+
+        /* About Section Enhanced */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            padding: 100px 10%;
+            align-items: center;
+            background: var(--primary-color);
+        }
+
+        .about-content h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+        }
+
+        .about-content h2 span {
+            color: var(--accent-color);
+        }
+
+        .about-text {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .fun-facts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .fact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .profile-img {
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 6px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(14, 255, 255, 0.4);
+            margin: 0 auto;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .profile-img::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            border: 2px solid var(--secondary-color);
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(14, 255, 255, 0.6);
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .experience-badge {
+            position: absolute;
+            bottom: 30px;
+            right: -20px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 238, 255, 0.3);
+        }
+
+        .experience-years {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* Skills Section Enhanced */
+        .skills {
+            padding: 100px 10%;
+            background: var(--dark-color);
+        }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .skill-category h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-item {
+            margin-bottom: 25px;
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .skill-name {
+            font-weight: 500;
+        }
+
+        .skill-percentage {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .skill-bar {
+            width: calc(100% - 15px);
+            height: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 3px;
+            position: relative;
+            margin-right: 15px;
+        }
+
+        .skill-bar::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            border-radius: 3px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.1, 0.82, 0.85, 1);
+            box-shadow: 0 0 15px var(--accent-color);
+            position: relative;
+        }
+
+        /* Workflow Section */
+        .workflow {
+            padding: 100px 10%;
+            background: var(--primary-color);
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .workflow-step {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .workflow-step:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 10%;
+            background: var(--dark-color);
+        }
+
+        .testimonial-slider {
+            max-width: 800px;
+            margin: 50px auto;
+            position: relative;
+        }
+
+        .testimonial-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            display: none;
+        }
+
+        .testimonial-item.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .author-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .author-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Interactive Resume */
+        .resume {
+            padding: 100px 10%;
+            background: var(--primary-color);
+        }
+
+        .resume-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--accent-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .timeline-date {
+            position: absolute;
+            left: -50px;
+            top: 0;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .resume-download {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Contact Section Enhanced */
+        .contact {
+            padding: 100px 10%;
+            background: var(--dark-color);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            margin-top: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-item:hover {
+            border-color: var(--accent-color);
+            transform: translateX(10px);
+        }
+
+        .contact-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .contact-link:hover {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(0, 238, 255, 0.5);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .form-group.textarea i {
+            top: 25px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(14, 255, 255, 0.2);
+        }
+
+        .form-group input:focus+i,
+        .form-group textarea:focus+i {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* File Upload Styling */
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed var(--accent-color);
+            border-radius: 10px;
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .file-upload-btn:hover {
+            background: rgba(14, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(14, 255, 255, 0.2);
+        }
+
+        #file-upload {
+            display: none;
+        }
+
+        #file-name {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Budget Slider Styling */
+        .budget-container {
+            margin-top: 10px;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        #budgetValue {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Calculator Widget */
+        .calculator {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(13, 17, 23, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .calculator.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calculator h4 {
+            color: var(--ai-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calculator-close {
+            background: transparent;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .calculator-input {
+            margin-bottom: 15px;
+        }
+
+        .calculator-input label {
+            display: block;
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .calculator-input input,
+        .calculator-input select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .calculator-result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 10px;
+            border: 1px dashed rgba(168, 85, 247, 0.3);
+            text-align: center;
+        }
+
+        .calculator-result h5 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        /* Footer Enhanced - Redesigned */
+        footer {
+            background: linear-gradient(180deg, rgba(8, 27, 41, 0.98), rgba(5, 17, 41, 1));
+            padding: 100px 10% 40px;
+            border-top: 1px solid rgba(14, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            gap: 80px;
+            margin-bottom: 60px;
+        }
+
+        .footer-about h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-about p {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 238, 255, 0.3);
+        }
+
+        /* Status Badge in Footer */
+        .footer-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 255, 133, 0.1);
+            border: 1px solid rgba(0, 255, 133, 0.3);
+            padding: 8px 15px;
+            border-radius: 50px;
+            color: var(--success-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 238, 255, 0.4);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: white;
+        }
+
+        /* AI Chatbot Styles */
+        .chatbot-trigger {
+            position: fixed;
+            bottom: 40px;
+            right: 110px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 2000;
+            box-shadow: 0 5px 25px rgba(0, 238, 255, 0.5);
+            transition: var(--transition);
+        }
+
+        .chatbot-trigger:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .chatbot-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4d4d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 2px solid var(--primary-color);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 120px;
+            right: 40px;
+            width: 380px;
+            height: 550px;
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 238, 255, 0.2);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 2000;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .chat-window.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: rgba(0, 238, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 238, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user-message {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 10px 18px;
+            color: white;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .send-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 20px 15px;
+        }
+
+        .quick-btn {
+            padding: 6px 12px;
+            background: rgba(0, 238, 255, 0.05);
+            border: 1px solid rgba(0, 238, 255, 0.2);
+            border-radius: 15px;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quick-btn:hover {
+            background: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 576px) {
+            .chat-window {
+                width: calc(100% - 40px);
+                right: 20px;
+                bottom: 100px;
+                height: 480px;
+            }
+
+            .chatbot-trigger {
+                right: 20px;
+            }
+
+            .back-to-top {
+                right: 90px;
+            }
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes slideRight {
+            0% {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideLeft {
+            0% {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideTop {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideBottom {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(20px, -20px);
+            }
+        }
+
+        @keyframes typing {
+
+            0%,
+            5%,
+            100% {
+                left: 0;
+            }
+
+            40%,
+            70% {
+                left: 100%;
+            }
+        }
+
+        @keyframes slide {
+            100% {
+                top: -140px;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .home-content h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .home-content h1 {
+                font-size: 3rem;
+            }
+
+            .dynamic-text {
+                font-size: 2rem;
+                height: 50px;
+            }
+
+            .navbar a {
+                margin-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 5%;
+            }
+
+            .home {
+                padding: 0 5%;
+                text-align: center;
+            }
+
+            .home-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .project-filters {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .calculator {
+                width: 280px;
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .home-content h1 {
+                font-size: 2rem;
+            }
+
+            .dynamic-text {
+                font-size: 1.5rem;
+                height: 40px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .fun-facts {
+                grid-template-columns: 1fr;
+            }
+
+            .calculator {
+                width: calc(100% - 40px);
+                left: 20px;
+            }
+        }
+
+        /* Video Modal */
+        .video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            backdrop-filter: blur(10px);
+        }
+
+        .video-modal.active {
+            display: flex;
+        }
+
+        .video-container {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 238, 255, 0.3);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-video {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 3001;
+            line-height: 1;
+        }
+
+        .close-video:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* New Button Style */
+        .project-link.video {
+            background: #ff0000;
+            color: white;
+            border: none;
+        }
+
+        .project-link.video:hover {
+            background: #cc0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="#home" class="logo">
+            <img src="logo.png" alt="MEBRATU Logo">
+        </a>
+
+        <nav class="navbar">
+            <a href="#home" class="active" style="--i:1" data-i18n="nav_home">Home</a>
+            <a href="#projects" style="--i:2" data-i18n="nav_projects">Projects</a>
+            <a href="#about" style="--i:3" data-i18n="nav_about">About</a>
+            <a href="#skills" style="--i:4" data-i18n="nav_skills">Skills</a>
+            <a href="#contact" style="--i:5" data-i18n="nav_contact">Contact</a>
+
+            <div class="lang-selector">
+                <i class="fas fa-globe"></i>
+                <select id="langSelect">
+                    <option value="en">English</option>
+                    <option value="am">አማርኛ</option>
+                    <option value="zh">中文</option>
+                    <option value="ar">العربية</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="home" id="home">
+        <div class="home-bg-animation" id="particles"></div>
+        <div class="home-content">
+            <div class="hello" data-i18n="hero_hello">Hi, I'm</div>
+            <h1 data-i18n="hero_name">MEBRATU</h1>
+            <div class="dynamic-text" id="dynamicText">
+                <li><span class="dynamic-text-item" data-i18n="web_developer">Web Developer</span></li>
+                <li><span class="dynamic-text-item" data-i18n="video_editor">Video Editor</span></li>
+            </div>
+            <p data-i18n="hero_desc">I am a Video Editor and Web Developer specializing in short-form videos for YouTube
+                Shorts, TikTok, and Instagram, along with modern personal and business websites. I help brands and
+                individuals grow online through engaging videos and responsive, user-friendly web design.</p>
+
+            <div class="cta-buttons">
+                <a href="#projects" class="btn btn-primary" data-i18n="btn_view_work">
+                    <i class="fas fa-briefcase"></i> View My Work
+                </a>
+                <a href="#contact" class="btn btn-secondary" data-i18n="btn_hire_me">
+                    <i class="fas fa-paper-plane"></i> Hire Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Projects Section -->
+    <section class="projects" id="projects">
+        <h2 class="section-title" data-i18n="projects_title">Featured <span>Projects</span></h2>
+
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all" data-i18n="filter_all">All</button>
+            <button class="filter-btn" data-filter="web" data-i18n="filter_web">Web Development</button>
+            <button class="filter-btn" data-filter="video" data-i18n="filter_video">Video Editing</button>
+        </div>
+
+        <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-card" data-category="web">
+                <div class="project-img">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="E-Coffee Shop Website">
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title" data-i18n="project1_title">E-Coffee Shop</h3>
+                    <p class="project-description" data-i18n="project1_desc">Developed a custom-built, responsive
+                        e-coffee shop website. Features
+                        include hand-written code for optimal performance, smooth interactive elements, and a cinematic
+                        UI design.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">HTML5/CSS3</span>
+                        <span class="tech-tag">JavaScript</span>
+                        <span class="tech-tag">PHP</span>
+
+                    </div>
+                    <div class="project-links">
+                        <a href="https://mebratuweb-devloper2025.github.io/onlineCoffeeShops/" class="project-link code"
+                            target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github"></i> View
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card" data-category="video">
+                <div class="project-img">
+                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="CapCut Video Editing">
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title" data-i18n="project2_title">CapCut Short-Form Mastery</h3>
+                    <p class="project-description" data-i18n="project2_desc">Expert video editing for TikTok and YouTube
+                        Shorts. Specializing in
+                        CapCut-based dynamic transitions, professional color grading, and viral-focused storytelling.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">CapCut</span>
+                        <span class="tech-tag">Color Grading</span>
+                        <span class="tech-tag">Short-form Content</span>
+                        <span class="tech-tag">Tiktok/Reels</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="javascript:void(0)" class="project-link video"
+                            onclick="openVideoModal('https://www.youtube.com/embed/A0T4E_y2RBQ')">
+                            <i class="fas fa-play"></i> Watch Video
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-content">
+            <h2 data-i18n="about_title">About <span>Me</span></h2>
+            <p class="about-text" data-i18n="about_text">I am a student at the University of Gondar with a passion for
+                video editing and web development. I create engaging short-form videos for YouTube Shorts, TikTok, and
+                Instagram, and build modern personal and business websites. I am always learning new skills to grow
+                creatively and professionally in the digital world.</p>
+
+
+
+            <div class="fun-facts">
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <span data-i18n="fact_sport">Passionate Sport Lover</span>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span data-i18n="fact_coding">Dedicated Coding Enthusiast</span>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <i class="fas fa-drum"></i>
+                    </div>
+                    <span data-i18n="fact_music">Music & Sound Explorer</span>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <span data-i18n="fact_projects">Worked on some projects</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-image">
+            <div class="profile-img">
+                <img src="man.png" alt="MEBRATU Profile Image">
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills" id="skills">
+        <h2 class="section-title" data-i18n="nav_skills">My <span>Skills</span></h2>
+
+        <div class="skills-container">
+            <div class="skill-category">
+                <h3><i class="fas fa-code"></i> <span data-i18n="skill_frontend">Frontend Development</span></h3>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">HTML/CSS</span>
+                        <span class="skill-percentage">98%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="98"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">JavaScript</span>
+                        <span class="skill-percentage">95%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="95"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">PHP</span>
+                        <span class="skill-percentage">92%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="92"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Node.js</span>
+                        <span class="skill-percentage">88%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="88"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="skill-category">
+                <h3><i class="fas fa-video"></i> <span data-i18n="skill_video">Video Production</span></h3>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Video Editing</span>
+                        <span class="skill-percentage">98%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="98"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Motion Graphics</span>
+                        <span class="skill-percentage">92%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="92"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Color Grading</span>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="90"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Sound Design</span>
+                        <span class="skill-percentage">85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="85"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section class="workflow">
+        <h2 class="section-title" data-i18n="workflow_title">My <span>Workflow</span></h2>
+
+        <div class="workflow-steps">
+            <div class="workflow-step">
+                <div class="step-number">01</div>
+                <h3 data-i18n="workflow_step1_title">Discovery</h3>
+                <p data-i18n="workflow_step1_desc">Understanding your goals, audience, and requirements</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">02</div>
+                <h3 data-i18n="workflow_step2_title">Planning</h3>
+                <p data-i18n="workflow_step2_desc">Creating project roadmap, wireframes, and timeline</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">03</div>
+                <h3 data-i18n="workflow_step3_title">Development</h3>
+                <p data-i18n="workflow_step3_desc">Building with clean code and modern technologies</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-number">04</div>
+                <h3 data-i18n="workflow_step4_title">Delivery</h3>
+                <p data-i18n="workflow_step4_desc">Testing, deployment, and post-launch support</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2 class="section-title" data-i18n="contact_title">Let's <span>Work Together</span></h2>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h3 data-i18n="contact_email">Email</h3>
+                        <a href="mailto:muhabawmebratu15@gmail.com" class="contact-link">muhabawmebratu15@gmail.com</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <h3 data-i18n="contact_phone">Phone / WhatsApp</h3>
+                        <a href="https://wa.me/251991215273" class="contact-link" target="_blank"
+                            rel="noopener noreferrer"></a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <h3 data-i18n="contact_location">Location</h3>
+                        <p data-i18n="contact_loc_val">Gondar, Ethiopia</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <h3 data-i18n="contact_time">Working Time</h3>
+                        <p data-i18n="contact_time_val">Full Working 24/7 Hours</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <form id="contactForm" action="https://formsubmit.co/muhabawmebratu15@gmail.com" method="POST">
+                    <!-- FormSubmit Configuration -->
+                    <input type="hidden" name="_subject" value="New Contact Form Submission from Portfolio">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="name" placeholder="Your Name" required
+                            data-i18n-placeholder="contact_placeholder_name">
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Your Email" required
+                            data-i18n-placeholder="contact_placeholder_email">
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-tasks"></i>
+                        <input type="text" name="project_type" placeholder="Project Type" required
+                            data-i18n-placeholder="contact_placeholder_type">
+                    </div>
+
+
+
+                    <!-- File Upload -->
+                    <div class="form-group">
+                        <div class="file-upload-wrapper">
+                            <label for="file-upload" class="file-upload-btn">
+                                <i class="fas fa-cloud-upload-alt"
+                                    style="position: static; opacity: 1; transform: none;"></i>
+                                <span data-i18n="file_upload_label">Attach Project Brief (Optional)</span>
+                            </label>
+                            <input type="file" name="attachment" id="file-upload"
+                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                            <span id="file-name" data-i18n="file_no_file">No file chosen</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group textarea">
+                        <i class="fas fa-comment-alt"></i>
+                        <textarea name="message" placeholder="Tell me about your project..." rows="5" required
+                            data-i18n-placeholder="contact_placeholder_msg"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="contact_send">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-about">
+                <h3 data-i18n="footer_name">MEBRATU</h3>
+                <div class="footer-status">
+                    <div class="status-dot"></div>
+                    <span data-i18n="footer_status">Available for Projects</span>
+                </div>
+                <p data-i18n="footer_desc">Professional web developer and video editor creating digital experiences that
+                    make an impact. Let's
+                    build something amazing together!</p>
+            </div>
+            <div class="footer-about">
+                <h3 data-i18n="footer_quick">Quick Links</h3>
+                <div class="footer-links">
+                    <a href="#home" data-i18n="nav_home"><i class="fas fa-chevron-right"></i> Home</a>
+                    <a href="#projects" data-i18n="nav_projects"><i class="fas fa-chevron-right"></i> Projects</a>
+                    <a href="#about" data-i18n="nav_about"><i class="fas fa-chevron-right"></i> About</a>
+                    <a href="#skills" data-i18n="nav_skills"><i class="fas fa-chevron-right"></i> Skills</a>
+                    <a href="#contact" data-i18n="nav_contact"><i class="fas fa-chevron-right"></i> Contact</a>
+                </div>
+            </div>
+            <div class="footer-about">
+                <h3 data-i18n="footer_connect">Connect With Me</h3>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/channel/UCFro4pFzqlMEI9wgEFN1aqA" class="social-link"
+                        title="YouTube" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61587278850699" class="social-link"
+                        title="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/3m8507?igsh=bnNsMWRtNWwyeWps" class="social-link"
+                        title="Instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=muhabawmebratu15@gmail.com"
+                        class="social-link" title="Gmail" target="_blank" rel="noopener noreferrer"><i
+                            class="fas fa-envelope"></i></a>
+                    <a href="https://www.tiktok.com/@3mvip?is_from_webapp=1&sender_device=pc" class="social-link"
+                        title="TikTok" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/251991215273" class="social-link" title="WhatsApp" target="_blank"
+                        rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://github.com/mebratuWeb-Devloper2025" class="social-link" title="GitHub"
+                        target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p data-i18n="footer_rights">&copy; 2026 MEBRATU Portfolio. All rights reserved.</p>
+            <p><i class="fas fa-heart" style="color: var(--accent-color);"></i> <span
+                    data-i18n="footer_country">Ethiopia</span></p>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot -->
+    <div class="chatbot-trigger" id="chatbotTrigger">
+        <i class="fas fa-comment-dots"></i>
+        <div class="chatbot-badge" data-i18n="chatbot_badge">Hi!</div>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h4 style="color: white; font-size: 1rem;" data-i18n="chatbot_title">Mebratu AI Guide</h4>
+                    <span style="color: var(--success-color); font-size: 0.75rem;" data-i18n="chatbot_status"><i
+                            class="fas fa-circle" style="font-size: 0.6rem;"></i> Online</span>
+                </div>
+            </div>
+            <button id="closeChat"
+                style="background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.2rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message" data-i18n="chatbot_welcome">
+                Hello! I'm Mebratu's AI assistant. I can help you explore this portfolio. What would you like to know?
+            </div>
+        </div>
+
+        <div class="quick-actions" id="quickActions">
+            <button class="quick-btn" data-query="projects" data-i18n="chatbot_btn_projects">View Projects</button>
+            <button class="quick-btn" data-query="skills" data-i18n="chatbot_btn_skills">My Skills</button>
+            <button class="quick-btn" data-query="contact" data-i18n="chatbot_btn_contact">How to Hire?</button>
+            <button class="quick-btn" data-query="working time"
+                data-i18n="chatbot_btn_availability">Availability</button>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..."
+                data-i18n-placeholder="chatbot_placeholder">
+            <button class="send-btn" id="sendMessage">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <span class="close-video" id="closeVideo">&times;</span>
+            <iframe id="videoIframe" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // AI Chatbot Logic
+            const chatbotTrigger = document.getElementById('chatbotTrigger');
+            const chatWindow = document.getElementById('chatWindow');
+            const closeChat = document.getElementById('closeChat');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessage = document.getElementById('sendMessage');
+            const quickBtns = document.querySelectorAll('.quick-btn');
+
+            const botKnowledge = {
+                en: {
+                    'projects': 'Mebratu has worked on premium projects including a custom E-Coffee Shop and expert Video Editing for TikTok/YouTube Shorts. Check the Projects section for more!',
+                    'skills': 'Mebratu is highly skilled in Web Development (HTML, CSS, JS, PHP) and Video Production (CapCut, Motion Graphics, Color Grading).',
+                    'contact': 'You can hire Mebratu via the contact form, email (muhabawmebratu15@gmail.com), or WhatsApp (+251 991 215 273).',
+                    'email': 'You can reach Mebratu directly at muhabawmebratu15@gmail.com for any project inquiries!',
+                    'working time': 'Mebratu is available Full Working 24/7 Hours for your projects!',
+                    'hi': 'Hello! How can I help you explore Mebratu work today?',
+                    'hello': 'Hi there! Looking for a developer or video editor?',
+                    'default': 'That is a great question! I recommend checking out the Projects or Skills section, or messaging Mebratu directly for more details.'
+                },
+                am: {
+                    'projects': 'መብራቱ በብጁ የተሰራ የኢ-ኮፊ ሾፕ እና ለቲክቶክ/ዩቲዩብ ሾርትስ የባለሙያ ቪዲዮ ዝግጅትን ጨምሮ በበርካታ ፕሮጀክቶች ላይ ሰርቷል። ለበለጠ መረጃ ፕሮጀክቶች ክፍልን ይመልከቱ!',
+                    'skills': 'መብራቱ በድረ-ገጽ ልማት (HTML, CSS, JS, PHP) እና በቪዲዮ ምርት (CapCut, Motion Graphics, Color Grading) ውስጥ ከፍተኛ ችሎታ አለው።',
+                    'contact': 'መብራቱን በመገናኛ ቅጽ፣ በኢሜል (muhabawmebratu15@gmail.com) ወይም በዋትስአፕ (+251 991 215 273) ማነጋገር ይችላሉ።',
+                    'email': 'መብራቱን በ muhabawmebratu15@gmail.com ለማንኛውም የፕሮጀክት ጥያቄዎች በቀጥታ ማግኘት ይችላሉ!',
+                    'working time': 'መብራቱ ለፕሮጀክቶችዎ ሙሉ 24/7 ሰዓት ዝግጁ ነው!',
+                    'hi': 'ሰላም! የመብራቱን ስራ እንዲያስሱ እንዴት እርዳዎታለሁ?',
+                    'hello': 'ሰላም! ገንቢ ወይም የቪዲዮ አዘጋጅ ይፈልጋሉ?',
+                    'default': 'በጣም ጥሩ ጥያቄ ነው! የፕሮጀክቶች ወይም የክህሎቶች ክፍልን እንዲመለከቱ እመክራለሁ፣ ወይም ለበለጠ ዝርዝሮች መብራቱን በቀጥታ ያግኙ።'
+                },
+                zh: {
+                    'projects': 'Mebratu 参与过多个高级项目，包括定制的电子咖啡店和 TikTok/YouTube Shorts 的专业视频编辑。查看项目部分了解更多！',
+                    'skills': 'Mebratu 在网页开发（HTML、CSS、JS、PHP）和视频制作（CapCut、动态图形、调色）方面技能精湛。',
+                    'contact': '您可以通过联系表单、电子邮件 (muhabawmebratu15@gmail.com) 或 WhatsApp (+251 991 215 273) 雇用 Mebratu。',
+                    'email': '您可以直接通过 muhabawmebratu15@gmail.com 联系 Mebratu 进行任何项目咨询！',
+                    'working time': 'Mebratu 全天候 24/7 为您的项目服务！',
+                    'hi': '你好！我今天如何帮助您探索 Mebratu 的作品？',
+                    'hello': '你好！在找开发人员或视频编辑吗？',
+                    'default': '这是一个很好的问题！我建议查看项目或技能部分，或直接联系 Mebratu 了解更多详情。'
+                },
+                ar: {
+                    'projects': 'عمل مبراتو على مشاريع متميزة بما في ذلك متجر قهوة إلكتروني مخصص وتحرير فيديو احترافي. تحقق من قسم المشاريع لمزيد من المعلومات!',
+                    'skills': 'مبراتو ماهر للغاية في تطوير الويب وإنتاج الفيديو.',
+                    'contact': 'يمكنك توظيف مبراتو عبر نموذج الاتصال أو البريد الإلكتروني (muhabawmebratu15@gmail.com) أو WhatsApp (+251 991 215 273).',
+                    'email': 'يمكنك التواصل مع مبراتو مباشرة على muhabawmebratu15@gmail.com لأي استفسارات عن المشاريع!',
+                    'working time': 'مبراتو متاح على مدار الساعة 24/7 لمشاريعك!',
+                    'hi': 'مرحباً! كيف يمكنني مساعدتك في استكشاف أعمال مبراتو اليوم؟',
+                    'hello': 'مرحباً! هل تبحث عن مطور أو محرر فيديو؟',
+                    'default': 'هذا سؤال رائع! أوصي بمراجعة قسم المشاريع أو المهارات، أو مراسلة مبراتو مباشرة لمزيد من التفاصيل.'
+                },
+                fr: {
+                    'projects': 'Mebratu a travaillé sur des projets premium incluant un E-Café personnalisé et du montage vidéo expert pour TikTok/YouTube Shorts. Consultez la section Projets pour plus!',
+                    'skills': 'Mebratu est très compétent en développement web (HTML, CSS, JS, PHP) et production vidéo (CapCut, Motion Graphics, étalonnage).',
+                    'contact': 'Vous pouvez embaucher Mebratu via le formulaire de contact, email (muhabawmebratu15@gmail.com), ou WhatsApp (+251 991 215 273).',
+                    'email': 'Vous pouvez contacter Mebratu directement à muhabawmebratu15@gmail.com pour toute demande de projet!',
+                    'working time': 'Mebratu est disponible 24/7 pour vos projets!',
+                    'hi': 'Bonjour! Comment puis-je vous aider à explorer le travail de Mebratu?',
+                    'hello': 'Salut! Vous cherchez un développeur ou un monteur vidéo?',
+                    'default': 'Excellente question! Je recommande de consulter la section Projets ou Compétences, ou de contacter Mebratu directement pour plus de détails.'
+                }
+            };
+
+            function addMessage(text, isBot = true) {
+                if (!chatMessages) return;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+                msgDiv.textContent = text;
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function getBotResponse(input) {
+                const currentLang = localStorage.getItem('preferredLang') || 'en';
+                const knowledge = botKnowledge[currentLang] || botKnowledge['en'];
+
+                input = input.toLowerCase();
+                for (let key in knowledge) {
+                    if (input.includes(key)) return knowledge[key];
+                }
+                return knowledge['default'];
+            }
+
+            function handleChat(text) {
+                if (!text || !text.trim()) return;
+                addMessage(text, false);
+                if (chatInput) chatInput.value = '';
+
+                // Simulate typing
+                if (chatMessages) {
+                    const typingDiv = document.createElement('div');
+                    typingDiv.className = 'message bot-message';
+                    typingDiv.textContent = '...';
+                    chatMessages.appendChild(typingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                    setTimeout(() => {
+                        if (chatMessages.contains(typingDiv)) {
+                            chatMessages.removeChild(typingDiv);
+                        }
+                        addMessage(getBotResponse(text));
+                    }, 1000);
+                }
+            }
+
+            if (chatbotTrigger) {
+                chatbotTrigger.addEventListener('click', () => {
+                    if (chatWindow) chatWindow.classList.toggle('active');
+                    const badge = document.querySelector('.chatbot-badge');
+                    if (badge) badge.style.display = 'none';
+                });
+            }
+
+            if (closeChat) {
+                closeChat.addEventListener('click', () => {
+                    if (chatWindow) chatWindow.classList.remove('active');
+                });
+            }
+
+            if (sendMessage) {
+                sendMessage.addEventListener('click', () => {
+                    if (chatInput) handleChat(chatInput.value);
+                });
+            }
+
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleChat(chatInput.value);
+                });
+            }
+            quickBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    handleChat(btn.getAttribute('data-query'));
+                });
+            });
+        });
+
+        function openVideoModal(url) {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = url;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = '';
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeVideo = document.getElementById('closeVideo');
+            const videoModal = document.getElementById('videoModal');
+
+            if (closeVideo) {
+                closeVideo.addEventListener('click', closeVideoModal);
+            }
+
+            if (videoModal) {
+                videoModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'videoModal') closeVideoModal();
+                });
+            }
+        });
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            const ls = document.getElementById('loadingScreen');
+            if (ls) {
+                setTimeout(() => {
+                    ls.style.opacity = '0';
+                    setTimeout(() => {
+                        ls.style.display = 'none';
+                    }, 500);
+                }, 1000);
+            }
+        });
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursorFollower');
+
+        if (cursor && cursorFollower) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+
+                setTimeout(() => {
+                    cursorFollower.style.left = e.clientX + 'px';
+                    cursorFollower.style.top = e.clientY + 'px';
+                }, 100);
+            });
+        }
+
+        // Theme Toggle
+        const darkModeBtn = document.getElementById('darkMode');
+        const lightModeBtn = document.getElementById('lightMode');
+
+        if (darkModeBtn && lightModeBtn) {
+            darkModeBtn.addEventListener('click', () => {
+                document.body.style.backgroundColor = '#081b29';
+                document.body.style.color = '#ededed';
+                darkModeBtn.classList.add('active');
+                lightModeBtn.classList.remove('active');
+            });
+
+            lightModeBtn.addEventListener('click', () => {
+                document.body.style.backgroundColor = '#ffffff';
+                document.body.style.color = '#333333';
+                lightModeBtn.classList.add('active');
+                darkModeBtn.classList.remove('active');
+            });
+        }
+
+        // Project Filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filter projects
+                const filter = button.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 100);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Animate Skill Bars on Scroll
+        const skillProgresses = document.querySelectorAll('.skill-progress');
+
+        const animateSkills = () => {
+            skillProgresses.forEach(progress => {
+                const width = progress.getAttribute('data-width');
+                progress.style.width = width + '%';
+            });
+        };
+
+        // Intersection Observer for skills
+        const skillsSection = document.querySelector('.skills');
+        if (skillsSection) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateSkills();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(skillsSection);
+        }
+
+        // Calculator
+        const showCalculatorBtn = document.getElementById('showCalculator');
+        const closeCalculatorBtn = document.getElementById('closeCalculator');
+        const calculator = document.getElementById('calculator');
+        const timelineSlider = document.getElementById('timeline');
+        const timelineValue = document.getElementById('timelineValue');
+        const estimatedCost = document.getElementById('estimatedCost');
+
+        if (showCalculatorBtn && calculator) {
+            showCalculatorBtn.addEventListener('click', () => {
+                calculator.classList.add('show');
+            });
+        }
+
+        if (closeCalculatorBtn && calculator) {
+            closeCalculatorBtn.addEventListener('click', () => {
+                calculator.classList.remove('show');
+            });
+        }
+
+        // Update timeline value
+        if (timelineSlider && timelineValue) {
+            timelineSlider.addEventListener('input', () => {
+                timelineValue.textContent = timelineSlider.value + ' weeks';
+                calculateCost();
+            });
+        }
+
+        // Calculate project cost
+        function calculateCost() {
+            const projectTypeEl = document.getElementById('projectType');
+            const complexityEl = document.getElementById('complexity');
+            const timelineEl = document.getElementById('timeline');
+            if (!projectTypeEl || !complexityEl || !timelineEl || !estimatedCost) return;
+
+            const projectType = projectTypeEl.value;
+            const complexity = complexityEl.value;
+            const timeline = parseInt(timelineEl.value);
+
+            let basePrice = 0;
+            let complexityMultiplier = 1;
+
+            // Base prices
+            switch (projectType) {
+                case 'website': basePrice = 1500; break;
+                case 'ecommerce': basePrice = 3000; break;
+                case 'mobile': basePrice = 4000; break;
+                case 'video': basePrice = 1000; break;
+                case 'design': basePrice = 1200; break;
+            }
+
+            // Complexity multipliers
+            switch (complexity) {
+                case 'simple': complexityMultiplier = 1; break;
+                case 'medium': complexityMultiplier = 1.5; break;
+                case 'complex': complexityMultiplier = 2; break;
+                case 'very-complex': complexityMultiplier = 3; break;
+            }
+
+            // Timeline adjustment (rushed projects cost more)
+            let timelineMultiplier = timeline < 4 ? 1.5 : 1;
+            if (timeline > 8) timelineMultiplier = 0.8; // Discount for longer projects
+
+            const total = basePrice * complexityMultiplier * timelineMultiplier;
+            const min = Math.round(total * 0.8);
+            const max = Math.round(total * 1.2);
+
+            estimatedCost.textContent = `$${min} - $${max}`;
+        }
+
+        // Initialize calculator
+        const pType = document.getElementById('projectType');
+        const cType = document.getElementById('complexity');
+        if (pType && cType) {
+            pType.addEventListener('change', calculateCost);
+            cType.addEventListener('change', calculateCost);
+            calculateCost();
+        }
+
+        // Budget Slider Interactivity
+        const budgetRange = document.getElementById('budgetRange');
+        const budgetValue = document.getElementById('budgetValue');
+
+        if (budgetRange && budgetValue) {
+            budgetRange.addEventListener('input', (e) => {
+                budgetValue.textContent = `$${e.target.value}`;
+            });
+        }
+
+        // File Upload Interactivity
+        const fileUpload = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        if (fileUpload && fileNameDisplay) {
+            fileUpload.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileNameDisplay.textContent = e.target.files[0].name;
+                    fileNameDisplay.style.color = 'var(--accent-color)';
+                } else {
+                    fileNameDisplay.textContent = 'No file chosen';
+                    fileNameDisplay.style.color = 'rgba(255, 255, 255, 0.6)';
+                }
+            });
+        }
+
+        // Contact Form Submission
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    alert('Thank you for your message! I will get back to you within 24 hours.');
+                    contactForm.reset();
+                    if (document.getElementById('budgetValue')) document.getElementById('budgetValue').textContent = '$500';
+                    if (document.getElementById('file-name')) document.getElementById('file-name').textContent = 'No file chosen';
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+
+                    // Show calculator after form submission
+                    const calc = document.getElementById('calculator');
+                    if (calc) calc.classList.add('show');
+                }, 2000);
+            });
+        }
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Update active nav link
+                    document.querySelectorAll('.navbar a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+
+                    // Scroll to section
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Create particles for background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (particlesContainer) {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.width = Math.random() * 10 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = Math.random() * 20 + 10 + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        createParticles();
+
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollY = window.pageYOffset;
+
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 100;
+                const sectionId = section.getAttribute('id');
+                const navLink = document.querySelector(`.navbar a[href="#${sectionId}"]`);
+
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight && navLink) {
+                    document.querySelectorAll('.navbar a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    navLink.classList.add('active');
+                }
+            });
+        });
+
+        // Back to Top Functionality
+        const backToTopBtn = document.getElementById('backToTop');
+
+        if (backToTopBtn) {
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Easter Egg - Konami Code
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    // Konami code activated!
+                    document.body.style.background = 'linear-gradient(45deg, #ff00ff, #00ffff)';
+                    document.body.style.animation = 'rainbow 5s linear infinite';
+
+                    // Add rainbow animation
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes rainbow {
+                            0% { filter: hue-rotate(0deg); }
+                            100% { filter: hue-rotate(360deg); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+
+                    // Reset after 10 seconds
+                    setTimeout(() => {
+                        document.body.style.background = '';
+                        document.body.style.animation = '';
+                    }, 10000);
+
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+        // Language System
+        const translations = {
+            en: {
+                nav_home: "Home",
+                nav_projects: "Projects",
+                nav_about: "About",
+                nav_skills: "Skills",
+                nav_contact: "Contact",
+                hero_hello: "Hi, I'm",
+                web_developer: "Web Developer",
+                video_editor: "Video Editor",
+                hero_desc: "I am a Video Editor and Web Developer specializing in short-form videos for YouTube Shorts, TikTok, and Instagram, along with modern personal and business websites.",
+                btn_view_work: "View My Work",
+                btn_hire_me: "Hire Me",
+                projects_title: "Featured Projects",
+                filter_all: "All",
+                filter_web: "Web Development",
+                filter_video: "Video Editing",
+                about_title: "About Me",
+                about_text: "I am a student at the University of Gondar with a passion for video editing and web development. I create engaging short-form videos for YouTube Shorts, TikTok, and Instagram, and build modern personal and business websites.",
+                fact_sport: "Passionate Sport Lover",
+                fact_coding: "Dedicated Coding Enthusiast",
+                fact_music: "Music & Sound Explorer",
+                fact_projects: "Worked on some projects",
+                workflow_title: "My Workflow",
+                workflow_step1_title: "Discovery",
+                workflow_step1_desc: "Understanding your goals, audience, and requirements",
+                workflow_step2_title: "Planning",
+                workflow_step2_desc: "Creating project roadmap, wireframes, and timeline",
+                workflow_step3_title: "Development",
+                workflow_step3_desc: "Building with clean code and modern technologies",
+                workflow_step4_title: "Delivery",
+                workflow_step4_desc: "Testing, deployment, and post-launch support",
+                contact_title: "Let's Work Together",
+                contact_email: "Email",
+                contact_phone: "Phone / WhatsApp",
+                contact_location: "Location",
+                contact_loc_val: "Gondar, Ethiopia",
+                contact_time: "Working Time",
+                contact_time_val: "Full Working 24/7 Hours",
+                contact_placeholder_name: "Your Name",
+                contact_placeholder_email: "Your Email",
+                contact_placeholder_type: "Project Type",
+                contact_placeholder_msg: "Tell me about your project...",
+                contact_send: "Send Message",
+                footer_quick: "Quick Links",
+                footer_connect: "Connect With Me",
+                footer_name: "MEBRATU",
+                footer_status: "Available for Projects",
+                footer_desc: "Professional web developer and video editor creating digital experiences that make an impact. Let's build something amazing together!",
+                footer_rights: "© 2026 MEBRATU Portfolio. All rights reserved.",
+                hero_name: "MEBRATU",
+                nav_logo: "MEBRATU",
+                chatbot_badge: "Hi!",
+                chatbot_title: "Mebratu AI Guide",
+                chatbot_status: "Online",
+                chatbot_welcome: "Hello! I'm Mebratu's AI assistant. I can help you explore this portfolio. What would you like to know?",
+                chatbot_btn_projects: "View Projects",
+                chatbot_btn_skills: "My Skills",
+                chatbot_btn_contact: "How to Hire?",
+                chatbot_btn_availability: "Availability",
+                chatbot_placeholder: "Type a message...",
+                skill_frontend: "Frontend Development",
+                skill_video: "Video Production",
+                file_upload_label: "Attach Project Brief (Optional)",
+                file_no_file: "No file chosen",
+                project1_title: "E-Coffee Shop",
+                project1_desc: "Developed a custom-built, responsive e-coffee shop website. Features include hand-written code for optimal performance, smooth interactive elements, and a cinematic UI design.",
+                project2_title: "CapCut Short-Form Mastery",
+                project2_desc: "Expert video editing for TikTok and YouTube Shorts. Specializing in CapCut-based dynamic transitions, professional color grading, and viral-focused storytelling."
+            },
+            am: {
+                nav_home: "መጀመሪያ",
+                nav_projects: "ፕሮጀክቶች",
+                nav_about: "ስለ እኔ",
+                nav_skills: "ክህሎቶች",
+                nav_contact: "አግኙኝ",
+                hero_hello: "ሰላም፣ እኔ",
+                web_developer: "ድረ-ገጽ አልሚ",
+                video_editor: "ቪዲዮ አዘጋጅ",
+                hero_desc: "እኔ የቪዲዮ አዘጋጅ እና የድረ-ገጽ አልሚ ነኝ። ለዩቲዩብ ሾርትስ፣ ለቲክቶክ እና ለኢንስታግራም አጫጭር ቪዲዮዎችን በማዘጋጀት እንዲሁም ዘመናዊ የንግድ እና የግል ድረ-ገጾችን በመገንባት እሰራለሁ።",
+                btn_view_work: "ስራዎቼን ይመልከቱ",
+                btn_hire_me: "ቀጥሩኝ",
+                projects_title: "ተለይተው የቀረቡ ስራዎች",
+                filter_all: "ሁሉም",
+                filter_web: "የድረ-ገጽ ልማት",
+                filter_video: "የቪዲዮ ዝግጅት",
+                about_title: "ስለ እኔ",
+                about_text: "እኔ በጎንደር ዩኒቨርሲቲ ተማሪ ስሆን ለቪዲዮ ዝግጅት እና ለድረ-ገጽ ልማት ከፍተኛ ፍላጎት አለኝ። ማራኪ አጫጭር ቪዲዮዎችን እሰራለሁ እንዲሁም ዘመናዊ ድረ-ገጾችን እገነባለሁ።",
+                fact_sport: "የስፖርት አፍቃሪ",
+                fact_coding: "የኮዲንግ ባለሙያ",
+                fact_music: "የሙዚቃ አድናቂ",
+                fact_projects: "በበርካታ ፕሮጀክቶች ላይ ሰርቻለሁ",
+                workflow_title: "የስራ ሂደቴ",
+                workflow_step1_title: "ማግኘት",
+                workflow_step1_desc: "ግቦችን፣ ተመልካቾችን እና ፍላጎቶችን መረዳት",
+                workflow_step2_title: "እቅድ ማውጣት",
+                workflow_step2_desc: "የፕሮጀክት ካርታ፣ ንድፍ እና የጊዜ ሰሌዳ ማዘጋጀት",
+                workflow_step3_title: "ልማት",
+                workflow_step3_desc: "በዘመናዊ ቴክኖሎጂዎች መገንባት",
+                workflow_step4_title: "ርክክብ",
+                workflow_step4_desc: "ሙከራ፣ ሰራ ላይ ማዋል እና የድጋፍ አገልግሎት",
+                contact_title: "አብረን እንስራ",
+                contact_email: "ኢሜይል",
+                contact_phone: "ስልክ / ዋትስአፕ",
+                contact_location: "አድራሻ",
+                contact_loc_val: "ጎንደር፣ ኢትዮጵያ",
+                contact_time: "የስራ ሰዓት",
+                contact_time_val: "ሙሉ 24/7 ሰዓት ዝግጁ ነኝ",
+                contact_placeholder_name: "ስምዎ",
+                contact_placeholder_email: "ኢሜይልዎ",
+                contact_placeholder_type: "የፕሮጀክት አይነት",
+                contact_placeholder_msg: "ስለ ፕሮጀክቱ ይንገሩኝ...",
+                contact_send: "መልዕክት ላክ",
+                footer_quick: "ፈጣን ሊንኮች",
+                footer_connect: "ከእኔ ጋር ይገናኙ",
+                footer_name: "መብራቱ",
+                footer_status: "ለፕሮጀክቶች ዝግጁ",
+                footer_desc: "ተጽዕኖ የሚያደርጉ ዲጂታል ተሞክሮዎችን የሚፈጥር ባለሙያ የድረ-ገጽ ገንቢ እና የቪዲዮ አዘጋጅ። አብረን አስደናቂ ነገር እንገንባ!",
+                footer_rights: "© 2026 መብራቱ ፖርትፎሊዮ። ሁሉም መብቶች የተጠበቁ ናቸው።",
+                hero_name: "መብራቱ",
+                nav_logo: "መብራቱ",
+                chatbot_badge: "ሰላም!",
+                chatbot_title: "የመብራቱ AI መመሪያ",
+                chatbot_status: "በመስመር ላይ",
+                chatbot_welcome: "ሰላም! እኔ የመብራቱ AI ረዳት ነኝ። ይህንን ፖርትፎሊዮ እንዲያስሱ እርዳዎታለሁ። ምን ማወቅ ይፈልጋሉ?",
+                chatbot_btn_projects: "ፕሮጀክቶችን ይመልከቱ",
+                chatbot_btn_skills: "ክህሎቶቼ",
+                chatbot_btn_contact: "እንዴት መቅጠር ይቻላል?",
+                chatbot_btn_availability: "ተገኝነት",
+                chatbot_placeholder: "መልዕክት ይጻፉ...",
+                skill_frontend: "የፍሮንትኤንድ ልማት",
+                skill_video: "የቪዲዮ ምርት",
+                file_upload_label: "የፕሮጀክት መረጃ አባሪ (አማራጭ)",
+                file_no_file: "ምንም ፋይል አልተመረጠም",
+                project1_title: "ኢ-ኮፊ ሾፕ",
+                project1_desc: "ብጁ የሆነ ተኳሃኝ የኢ-ኮፊ ሾፕ ድረ-ገጽ ተዘጋጅቷል። ለተሻለ አፈጻጸም በእጅ የተጻፈ ኮድ፣ ለስላሳ በይነተገናኝ አካላት እና ሲኒማቲክ ዲዛይን ያካትታል።",
+                project2_title: "ካፕካት አጭር ቪዲዮ ዝግጅት",
+                project2_desc: "ለቲክቶክ እና ለዩቲዩብ ሾርትስ የባለሙያ ቪዲዮ ዝግጅት። በካፕካት ላይ የተመሰረቱ ተለዋዋጭ ሽግግሮች፣ ቀለሞች እና ታሪክ አወሳሰድ ላይ ያተኩራል።"
+            },
+            zh: {
+                nav_home: "首页",
+                nav_projects: "项目",
+                nav_about: "关于",
+                nav_skills: "技能",
+                nav_contact: "联系",
+                hero_hello: "你好，我是",
+                web_developer: "网页开发",
+                video_editor: "视频编辑",
+                hero_desc: "我是一名视频编辑和网页开发人员，专注于YouTube Shorts、TikTok和Instagram的短视频制作，以及现代个人和商业网站建设。",
+                btn_view_work: "查看作品",
+                btn_hire_me: "雇用我",
+                projects_title: "精选项目",
+                filter_all: "全部",
+                filter_web: "网页开发",
+                filter_video: "视频编辑",
+                about_title: "关于我",
+                about_text: "我是贡德尔大学的学生，热爱视频编辑和网页开发。我制作吸引人的短视频，并建立现代化的网站。",
+                fact_sport: "热爱运动",
+                fact_coding: "编程爱好者",
+                fact_music: "音乐与音效探索者",
+                fact_projects: "参与过多个项目",
+                workflow_title: "工作流程",
+                workflow_step1_title: "探索",
+                workflow_step1_desc: "了解您的目标、受众和需求",
+                workflow_step2_title: "规划",
+                workflow_step2_desc: "制定项目路线图、原型和时间表",
+                workflow_step3_title: "开发",
+                workflow_step3_desc: "使用简洁代码和现代技术构建",
+                workflow_step4_title: "交付",
+                workflow_step4_desc: "测试、部署和后期支持",
+                contact_title: "让我们合作",
+                contact_email: "电子邮件",
+                contact_phone: "电话 / WhatsApp",
+                contact_location: "地点",
+                contact_loc_val: "埃塞俄比亚，贡德尔",
+                contact_time: "工作时间",
+                contact_time_val: "24/7 全天候工作",
+                contact_placeholder_name: "您的姓名",
+                contact_placeholder_email: "您的邮箱",
+                contact_placeholder_type: "项目类型",
+                contact_placeholder_msg: "告诉我您的项目...",
+                contact_send: "发送消息",
+                footer_quick: "快速链接",
+                footer_connect: "关注我",
+                footer_name: "MEBRATU",
+                footer_status: "可接项目",
+                footer_desc: "专业的网页开发人员和视频编辑，创造有影响力的数字体验。让我们一起创造令人惊叹的东西！",
+                footer_rights: "© 2026 MEBRATU 作品集。保留所有权利。",
+                hero_name: "MEBRATU",
+                nav_logo: "MEBRATU",
+                chatbot_badge: "你好！",
+                chatbot_title: "Mebratu AI 助手",
+                chatbot_status: "在线",
+                chatbot_welcome: "你好！我是 Mebratu 的 AI 助手。我可以帮助您探索这个作品集。您想了解什么？",
+                chatbot_btn_projects: "查看项目",
+                chatbot_btn_skills: "我的技能",
+                chatbot_btn_contact: "如何雇用？",
+                chatbot_btn_availability: "可用性",
+                chatbot_placeholder: "输入消息...",
+                skill_frontend: "前端开发",
+                skill_video: "视频制作",
+                file_upload_label: "附加项目简介（可选）",
+                file_no_file: "未选择文件",
+                project1_title: "电子咖啡店",
+                project1_desc: "开发了一个定制的、响应式的电子咖啡店网站。具有优化性能的手写代码、流畅的交互元素和电影般的 UI 设计。",
+                project2_title: "CapCut 短视频精通",
+                project2_desc: "TikTok 和 YouTube Shorts 的专业视频编辑。专注于基于 CapCut 的动态过渡、专业调色和以病毒传播为核心的叙事。"
+            },
+            ar: {
+                nav_home: "الرئيسية",
+                nav_projects: "المشاريع",
+                nav_about: "من أنا",
+                nav_skills: "المهارات",
+                nav_contact: "اتصل بي",
+                hero_hello: "مرحباً، أنا",
+                web_developer: "مطور ويب",
+                video_editor: "محرر فيديو",
+                hero_desc: "أنا محرر فيديو ومطور ويب متخصص في الفيديوهات القصيرة لـ YouTube Shorts و TikTok و Instagram، بالإضافة إلى المواقع الإلكترونية الحديثة.",
+                btn_view_work: "عرض أعمالي",
+                btn_hire_me: "وظفني",
+                projects_title: "المشاريع المميزة",
+                filter_all: "الكل",
+                filter_web: "تطوير الويب",
+                filter_video: "تحرير الفيديو",
+                about_title: "من أنا",
+                about_text: "أنا طالب في جامعة غوندار ولدي شغف بتحرير الفيديو وتطوير الويب. أقوم بإنشاء فيديوهات قصيرة جذابة وأبني مواقع إلكترونية حديثة.",
+                fact_sport: "محب للرياضة",
+                fact_coding: "عاشق للبرمجة",
+                fact_music: "مستكشف الموسيقى",
+                fact_projects: "عملت على عدة مشاريع",
+                workflow_title: "خطة العمل",
+                workflow_step1_title: "الاكتشاف",
+                workflow_step1_desc: "فهم أهدافك وجمهورك ومتطلباتك",
+                workflow_step2_title: "التخطيط",
+                workflow_step2_desc: "إنشاء خارطة طريق المشروع والجداول الزمنية",
+                workflow_step3_title: "التطوير",
+                workflow_step3_desc: "البناء بأحدث التقنيات",
+                workflow_step4_title: "التسليم",
+                workflow_step4_desc: "الاختبار والنشر والدعم الفني",
+                contact_title: "دعنا نعمل معاً",
+                contact_email: "البريد الإلكتروني",
+                contact_phone: "الهاتف / واتساب",
+                contact_location: "الموقع",
+                contact_loc_val: "غوندار، إثيوبيا",
+                contact_time: "وقت العمل",
+                contact_time_val: "متوفر على مدار الساعة 24/7",
+                contact_placeholder_name: "اسمك",
+                contact_placeholder_email: "بريدك الإلكتروني",
+                contact_placeholder_type: "نوع المشروع",
+                contact_placeholder_msg: "أخبرني عن مشروعك...",
+                contact_send: "إرسال الرسالة",
+                footer_quick: "روابط سريعة",
+                footer_connect: "تواصل معي",
+                footer_name: "مبراتو",
+                footer_status: "متاح للمشاريع",
+                footer_desc: "مطور ويب ومحرر فيديو محترف يخلق تجارب رقمية مؤثرة. دعنا نبني شيئًا مذهلاً معًا!",
+                footer_rights: "© 2026 مبراتو للأعمال. جميع الحقوق محفوظة.",
+                hero_name: "مبراتو",
+                nav_logo: "مبراتو",
+                chatbot_badge: "مرحباً!",
+                chatbot_title: "مرشد مبراتو AI",
+                chatbot_status: "متصل",
+                chatbot_welcome: "مرحباً! أنا مساعد مبراتو AI. يمكنني مساعدتك في استكشاف هذا الملف الشخصي. ماذا تريد أن تعرف؟",
+                chatbot_btn_projects: "عرض المشاريع",
+                chatbot_btn_skills: "مهاراتي",
+                chatbot_btn_contact: "كيف توظفني؟",
+                chatbot_btn_availability: "التوفر",
+                chatbot_placeholder: "اكتب رسالة...",
+                skill_frontend: "تطوير الواجهة الأمامية",
+                skill_video: "إنتاج الفيديو",
+                file_upload_label: "إرفاق ملخص المشروع (اختياري)",
+                file_no_file: "لم يتم اختيار ملف",
+                project1_title: "متجر القهوة الإلكتروني",
+                project1_desc: "تطوير موقع متجر قهوة إلكتروني مخصص ومتجاوب. يتميز بأكواد برمجية محسنة، عناصر تفاعلية سلسة، وتصميم واجهة سينمائي.",
+                project2_title: "احتراف فيديوهات CapCut القصيرة",
+                project2_desc: "تحرير فيديو احترافي لـ TikTok و YouTube Shorts. متخصص في انتقالات CapCut الديناميكية، التلوين الاحترافي، وسرد القصص الموجه للانتشار."
+            },
+            fr: {
+                nav_home: "Accueil",
+                nav_projects: "Projets",
+                nav_about: "À propos",
+                nav_skills: "Compétences",
+                nav_contact: "Contact",
+                hero_hello: "Salut, je suis",
+                web_developer: "Développeur Web",
+                video_editor: "Monteur Vidéo",
+                hero_desc: "Je suis monteur vidéo et développeur web spécialisé dans les vidéos courtes pour YouTube Shorts, TikTok et Instagram, ainsi que dans les sites web modernes.",
+                btn_view_work: "Voir mes travaux",
+                btn_hire_me: "Engagez-moi",
+                projects_title: "Projets Vedettes",
+                filter_all: "Tous",
+                filter_web: "Développement Web",
+                filter_video: "Montage Vidéo",
+                about_title: "À propos de moi",
+                about_text: "Je suis étudiant à l'Université de Gondar avec une passion pour le montage vidéo et le développement web. Je crée des vidéos courtes engageantes et je construis des sites web modernes.",
+                fact_sport: "Amateur de sport",
+                fact_coding: "Passionné de codage",
+                fact_music: "Explorateur de sons",
+                fact_projects: "Travaillé sur plusieurs projets",
+                workflow_title: "Mon Flux de Travail",
+                workflow_step1_title: "Découverte",
+                workflow_step1_desc: "Comprendre vos objectifs, votre public et vos besoins",
+                workflow_step2_title: "Planification",
+                workflow_step2_desc: "Création de la feuille de route et du calendrier",
+                workflow_step3_title: "Développement",
+                workflow_step3_desc: "Construction avec un code propre",
+                workflow_step4_title: "Livraison",
+                workflow_step4_desc: "Tests, déploiement et support",
+                contact_title: "Travaillons ensemble",
+                contact_email: "Email",
+                contact_phone: "Téléphone / WhatsApp",
+                contact_location: "Localisation",
+                contact_loc_val: "Gondar, Éthiopie",
+                contact_time: "Temps de travail",
+                contact_time_val: "Disponible 24/7",
+                contact_placeholder_name: "Votre Nom",
+                contact_placeholder_email: "Votre Email",
+                contact_placeholder_type: "Type de Projet",
+                contact_placeholder_msg: "Parlez-moi de votre projet...",
+                contact_send: "Envoyer",
+                footer_quick: "Liens rapides",
+                footer_connect: "Rejoignez-moi",
+                footer_name: "MEBRATU",
+                footer_status: "Disponible pour projets",
+                footer_desc: "Développeur web et monteur vidéo professionnel créant des expériences numériques percutantes. Construisons quelque chose d'incroyable ensemble!",
+                footer_rights: "© 2026 MEBRATU Portfolio. Tous droits réservés.",
+                hero_name: "MEBRATU",
+                nav_logo: "MEBRATU",
+                chatbot_badge: "Salut!",
+                chatbot_title: "Guide AI Mebratu",
+                chatbot_status: "En ligne",
+                chatbot_welcome: "Bonjour! Je suis l'assistant AI de Mebratu. Je peux vous aider à explorer ce portfolio. Que voulez-vous savoir?",
+                chatbot_btn_projects: "Voir les projets",
+                chatbot_btn_skills: "Mes compétences",
+                chatbot_btn_contact: "Comment embaucher?",
+                chatbot_btn_availability: "Disponibilité",
+                chatbot_placeholder: "Tapez un message...",
+                skill_frontend: "Développement Frontend",
+                skill_video: "Production Vidéo",
+                file_upload_label: "Joindre un brief de projet (Optionnel)",
+                file_no_file: "Aucun fichier choisi",
+                project1_title: "E-Café",
+                project1_desc: "Développement d'un site web de café en ligne personnalisé et réactif. Comprend un code optimisé, des éléments interactifs fluides et un design UI cinématographique.",
+                project2_title: "Maîtrise des vidéos courtes CapCut",
+                project2_desc: "Montage vidéo expert pour TikTok et YouTube Shorts. Spécialisé dans les transitions dynamiques CapCut, l'étalonnage professionnel et le storytelling viral."
+            }
+        };
+
+        function setLanguage(lang) {
+            const data = translations[lang];
+            if (!data) return;
+
+            // Update text content
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (data[key]) {
+                    // Preserving icon if exists
+                    const icon = el.querySelector('i');
+                    if (icon) {
+                        el.childNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE) {
+                                node.remove();
+                            }
+                        });
+                        el.appendChild(document.createTextNode(' ' + data[key]));
+                    } else {
+                        // For spans inside dynamic-text, we need to be careful
+                        const span = el.tagName === 'SPAN' ? el : el.querySelector('span');
+                        if (span && el.classList.contains('dynamic-text-item')) {
+                            span.textContent = data[key];
+                        } else {
+                            el.textContent = data[key];
+                        }
+                    }
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (data[key]) {
+                    el.placeholder = data[key];
+                }
+            });
+
+            // Handle RTL
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = lang;
+            }
+
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        document.getElementById('langSelect').addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+        });
+
+        // Initialize language
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferredLang') || 'en';
+            const langSelect = document.getElementById('langSelect');
+            if (langSelect) {
+                langSelect.value = savedLang;
+                setLanguage(savedLang);
+            }
+        });
+    </script>
+</body>
+
+</html>
